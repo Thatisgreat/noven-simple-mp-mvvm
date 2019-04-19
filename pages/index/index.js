@@ -1,8 +1,7 @@
-//index.js
-//获取应用实例
+//page页面，替换Page
 const createPage = require('../../utils/createPage.js')
 
-let page = {
+createPage({
   data: {
     motto: 'Hello World',
     userInfo: {},
@@ -37,9 +36,7 @@ let page = {
   onReady() {
     // console.log(this)
   }
-}
-
-createPage(page)
+})
 
 
 

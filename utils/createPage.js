@@ -6,7 +6,7 @@ function createPage(options) {
 
   params.onLoad = function(query) {
     //初始化vue
-    initVue(this,options);
+    initNvm(this,options);
     //执行生命周期的onLoad
     if(options.onLoad) options.onLoad.call(this,query);
   }
@@ -20,7 +20,7 @@ function createPage(options) {
 
 
 
-function initVue(wxPage,options) {
+function initNvm(wxPage,options) {
   let nvm = new Noven(options)
   nvm.$wxPage = wxPage;
   nvm.$options = options
