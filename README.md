@@ -7,7 +7,7 @@
 
 示例如下：
 
-![](/Users/luowen/Desktop/1555583474308.gif)
+![](./img/1555583474308.gif)
 
 
 
@@ -39,7 +39,7 @@ xxx.js文件中，引入createPage
 
 创建页面
 
-![](/Users/luowen/Desktop/1.png)
+![](./img/1.png)
 
 
 
