@@ -347,7 +347,7 @@ function handleArray() {
 	  })
 	})
 
-	return arrayProto;
+	return arrayProto ;
 }
 
 
