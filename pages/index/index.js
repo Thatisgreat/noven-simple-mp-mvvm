@@ -20,8 +20,8 @@ createPage({
       this.helloMotto(this.motto);
     },
     helloMotto(nv) {
-      // console.log('hahaha' + nv)
-    }
+      console.log(nv)
+    },
   },
   watch: {
     motto(nv,ov) {
@@ -35,6 +35,10 @@ createPage({
 
   onReady() {
     // console.log(this)
+  },
+
+  config: {
+    vModel: ['motto']
   }
 })
 
