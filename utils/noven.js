@@ -1,5 +1,8 @@
 let uid = 1;
+let arrayHandler = handleArray();
 
+
+//核心类
 class Noven {
 	constructor($options) {
 		this.$options = $options;
@@ -68,6 +71,7 @@ class Noven {
 		Object.entries(this.$options.methods).forEach(([key,value]) =>{
 			this[key] = value.bind(this,...arguments);
 		})
+
 	}
 
 
@@ -89,11 +93,35 @@ class Noven {
 		})
 	}
 
+	/**
+	 * [walkArray 遍历数组，对每个key进行代理]
+	 * @Author   罗文
+	 * @DateTime 2019-04-11
+	 * @param    {[Array]}   arr    [要代理的数组]
+	 * ]
+	 */
+	walkArray(arr) {
+		if(!arr || !Array.isArray(arr)) return;
+
+		arr.__proto__ = arrayHandler;
+
+		//给数组的每一项添加代理，这里用forEach要报错
+		for(let i = 0 ; i < arr.length ; i ++ ) {
+			this.walk(arr[i]);
+		}
+	}
+
 	//进行数据的代理绑定
 	defineReactive(obj,key,value,isRoot = false) {
 		let dep = new Dep(key);
-		//如果值是对象，需要递归代理
-		this.walk(value, false);	
+		//如果值是数组，需要循环添加代理
+		if(Array.isArray(value)) {
+			value.__dep__ = dep;
+			this.walkArray(value);
+		}	else {
+			//如果值是对象，需要递归代理
+		  this.walk(value, false);
+		}
 
 		let nvm = this;
 		let proxyObj = isRoot ? nvm : obj;
@@ -111,7 +139,14 @@ class Noven {
       },
       set(newValue) {
       	if( value === newValue ) return;
-        nvm.walk(newValue, false);
+      	//如果值是数组，需要循环添加代理
+				if(Array.isArray(newValue)) {
+					newValue.__dep__ = dep;
+					nvm.walkArray(newValue);
+				}	else {
+					nvm.walk(newValue, false);
+				}
+        
         value = newValue
         dep.notify();
       }
@@ -181,12 +216,10 @@ Dep.prototype.depend = function() {
 //给属性设置新值会触发setter，同时会触发闭包的dep的更新
 //循环subs数组，触发每个watcher的更新
 Dep.prototype.notify = function() {
-	this.subs.forEach(watcher => {
-		watcher.update();
-	})
+	for (var i = 0, l = this.subs.length; i < l; i++) {
+    this.subs[i].update();
+  }
 }
-
-
 
 
 
@@ -280,4 +313,41 @@ Watcher.prototype.run = function() {
 function noop (a, b, c) {}
 
 
-module.exports = Noven
+//拦截数组的某些操作方法
+//通过调用这些方法，触发数组的dep的notify -> watcher的update -> 界面的更新
+function handleArray() {
+	let arrayProto = Object.create(Array.prototype);
+	let arrayMethods = [
+	  'push',
+	  'pop',
+	  'shift',
+	  'unshift',
+	  'splice',
+	  'sort',
+	  'reverse'
+	];
+	arrayMethods.forEach(method => {
+	  Object.defineProperty(arrayProto,method,{
+	    enumerable: false,
+	    writable: true,
+	    configurable: true,
+	    value: function(...arg) {
+	      //Array对应的这个方法，先取出来
+	      let original = Array.prototype[method];
+
+	      //这里就是重写方法的核心代码
+	      //在初始化的时候，会给数组添加一个dep对象，保存与watcher的关系，每次调用
+	      //这些方法的时候，就会触发watcher更新
+	      
+	      if(this.__dep__) this.__dep__.notify()
+
+	      //执行原数组的对应方法，返回值
+	      return original.apply(this,arg);
+	    }
+	  })
+	})
+
+	return arrayProto;
+}
+
+
