@@ -1,0 +1,9 @@
+<!--index.wxml-->
+<view class="container" >
+  本页数据：{{test}}
+
+  <button style="margin-bottom: 100rpx" bindtap="changeTest">修改本页数据</button>
+
+  novenX数据：{{novenX}}
+  <button bindtap="changeNovenXTest">修改novenX中的数据</button>
+</view>

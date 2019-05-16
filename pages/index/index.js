@@ -1,5 +1,6 @@
 //page页面，替换Page
 const createPage = require('../../utils/createPage.js')
+const testStore = require('../../store/test.store.js')
 
 createPage({
   data: {
@@ -11,6 +12,9 @@ createPage({
   computed: {
     sayMotto() {
       return this.motto + ' ' + this.hasUserInfo
+    },
+    novenX() {
+      return testStore.novenxHello
     }
   },
   methods: {
@@ -22,6 +26,11 @@ createPage({
     helloMotto(nv) {
       console.log(nv)
     },
+    goTo() {
+      wx.navigateTo({
+        url:'/pages/novenx/index'
+      })
+    }
   },
   watch: {
     motto(nv,ov) {

@@ -17,6 +17,7 @@ function createPage(options) {
   params.onReady = function() {
     if(options.onReady) options.onReady.call(this);
   }
+
   Page(params)
 }
 
@@ -34,7 +35,7 @@ function initNvm(wxPage,options) {
 
   nvm.$watch(()=>{
     return getLastData(nvm,options)
-  },(nv)=> {
+  },(nv,ov)=> {
     wxPage.setData(nv)
   })
 }
@@ -92,6 +93,11 @@ function getLastData(nvm,options) {
 
   keys.forEach(key => obj[key] = nvm[key])  
   return obj;
+}
+
+function diff(nv,ov) {
+  console.log(nv,ov);
+  //先移除每个节点的__dep
 }
 
 
