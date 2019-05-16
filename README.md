@@ -9,6 +9,8 @@
 
 ![](./img/1555583474308.gif)
 
+![](./img/1557998161453098.gif)
+
 
 
 同时有与Vue体验一致的computed，watch，methods等
