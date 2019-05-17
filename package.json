@@ -1,0 +1,22 @@
+{
+  "name": "noven-simple-mp-mvvm",
+  "version": "1.0.0",
+  "description": "一个简洁的双向数据绑定的原生小程序mvvm框架 与mpvue等框架的区别是：本框架是增强型框架（只增强原生小程序的功能），非编译型框架",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a290079770/noven-simple-mp-mvvm.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/a290079770/noven-simple-mp-mvvm/issues"
+  },
+  "homepage": "https://github.com/a290079770/noven-simple-mp-mvvm#readme",
+  "dependencies": {
+    "noven-mp-mvvm": "^1.2.2"
+  }
+}

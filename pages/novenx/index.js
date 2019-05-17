@@ -1,6 +1,7 @@
 //page页面，替换Page
-const createPage = require('../../utils/createPage.js')
+const { createPage } = require('noven-mp-mvvm')
 const testStore = require('../../store/test.store.js')
+
 
 createPage({
   data: {
@@ -20,7 +21,9 @@ createPage({
     }
   },
   watch: {
-    
+    novenX(nv) {
+      console.log(nv)
+    }
   },
 
   onLoad(query) {

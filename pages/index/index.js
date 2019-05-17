@@ -1,6 +1,7 @@
 //page页面，替换Page
-const createPage = require('../../utils/createPage.js')
+const { createPage } = require('noven-mp-mvvm')
 const testStore = require('../../store/test.store.js')
+
 
 createPage({
   data: {
@@ -24,7 +25,7 @@ createPage({
       this.helloMotto(this.motto);
     },
     helloMotto(nv) {
-      console.log(nv)
+      // testStore.commit('changeTest',Math.random());
     },
     goTo() {
       wx.navigateTo({

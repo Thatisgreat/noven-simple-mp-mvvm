@@ -10,7 +10,8 @@
       这是一个input:<input value="{{motto}}" placeholder="这是一个可以自动聚焦的input" bindinput="set_motto"/>
     </view>
      <view class="section" style="margin-top: 50rpx;">
-      这是novenx中的数据：{{novenX}}
+      这是novenx中的数据：
+      <text style="color: red"> {{novenX}} </text>    
     </view>
   </view>
   <view class="usermotto">
