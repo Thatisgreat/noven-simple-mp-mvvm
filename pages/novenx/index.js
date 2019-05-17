@@ -2,7 +2,6 @@
 const { createPage } = require('noven-mp-mvvm')
 const testStore = require('../../store/test.store.js')
 
-
 createPage({
   data: {
     test:'hello'
@@ -15,9 +14,10 @@ createPage({
   methods: {
     changeTest() {
       this.test = Math.random();
+      testStore.dispatch('changeTestAction',Math.random());
     },
     changeNovenXTest() {
-      testStore.commit('changeTest',Math.random());
+      testStore.commit('changeTestMutation',Math.random());
     }
   },
   watch: {

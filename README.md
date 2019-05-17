@@ -1,6 +1,9 @@
 # noven-simple-mp-mvvm
-一个简洁的双向数据绑定的原生小程序mvvm框架
-与mpvue等框架的区别是：本框架是增强型框架（只增强原生小程序的功能），非编译型框架
+**Noven-mp-mvvm  一个简洁的双向数据绑定的原生小程序mvvm框架**
+
+与mpvue等框架的区别是：
+
+本框架是**增强型框架**（只增强原生小程序的功能），非编译型框架
 
 
 
@@ -17,6 +20,10 @@
 5. ...
 
    
+  
+  **本项目是noven-mp-mvvm框架应用的展示demo：**
+  
+  
 
 
 示例如下：
@@ -27,37 +34,56 @@
 
 
 
-同时有与Vue体验一致的computed，watch，methods等
+同时有与Vue体验一致的computed，watch，methods，vuex等
 
 
 
-## 使用方法
+## Noven-mp-mvvm使用方法
 
 ### 1、获取代码
 
-`git clone https://github.com/a290079770/noven-simple-mp-mvvm.git`
+```
+npm install noven-mp-mvvm -S
+```
 
-项目是一个原生小程序demo
+或
+
+```
+1、git clone https://github.com/a290079770/noven-simple-mp-mvvm.git
+2、找到utils/noven.js、util/createPage.js、util/novenX.js
+3、三个核心文件放入项目
+```
 
 
 
-## 2、找到utils/noven.js和util/createPage.js
+## 2、使用
 
-createPage.js对noven.js文件存在引用关系，需将这两个文件放置于同一目录，或修改引用路径
+正常创建小程序页面文件.wxml、.wxss、.json、.js
 
-如果需要用到全局状态管理机 novenX，还需引入util/novenX.js
+#### 2.1、使用npm包
+
+![](./img/2.png)
 
 
 
-## 3、正常创建小程序页面文件.wxml、.wxss、.json、.js
-
-xxx.js文件中，引入createPage
-
-`const createPage = require('../../utils/createPage.js')`
-
-创建页面
+#### 2.2、使用utils下的文件
 
 ![](./img/1.png)
+
+
+
+#### 2.3、store的创建
+
+![](./img/3.png)
+
+store的核心操作方法：
+
+```
+xxxStore.dispatch('xxAction',params)
+xxxStore.commit('xxMutation',params)
+
+其他概念见vuex
+```
 
 
 
