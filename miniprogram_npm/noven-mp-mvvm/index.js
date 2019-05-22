@@ -4,9 +4,9 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {} }; __MODS__[
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = { exports: {} }; __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); if(typeof m.exports === "object") { Object.keys(m.exports).forEach(function(k) { __MODS__[modId].m.exports[k] = m.exports[k]; }); if(m.exports.__esModule) Object.defineProperty(__MODS__[modId].m.exports, "__esModule", { value: true }); } else { __MODS__[modId].m.exports = m.exports; } } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1558085208301, function(require, module, exports) {
+__DEFINE__(1558491691502, function(require, module, exports) {
 const Noven = require('./src/noven.js')
-const NovenX = require('./src/novenx.js')
+const NovenX = require('./src/novenX.js')
 const createPage = require('./src/createPage.js')
 
 module.exports = {
@@ -15,8 +15,8 @@ module.exports = {
 	createPage
 }
 
-}, function(modId) {var map = {"./src/noven.js":1558085208302,"./src/novenx.js":1558085208303,"./src/createPage.js":1558085208304}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1558085208302, function(require, module, exports) {
+}, function(modId) {var map = {"./src/noven.js":1558491691503,"./src/novenX.js":1558491691504,"./src/createPage.js":1558491691505}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1558491691503, function(require, module, exports) {
 let uid = 1;
 let targetStack = []; //保存所有的target
 let arrayHandler = handleArray();
@@ -485,7 +485,7 @@ module.exports = Noven;
 
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1558085208303, function(require, module, exports) {
+__DEFINE__(1558491691504, function(require, module, exports) {
 const Noven = require('./noven.js')
 
 module.exports = class Store {
@@ -604,7 +604,7 @@ module.exports = class Store {
 			return;
 		}
 
-		action(params);
+		return action(params);
 	}
 
 	//触发mutations
@@ -640,8 +640,8 @@ function getLastData(nvm,options) {
   keys.forEach(key => obj[key] = nvm[key])  
   return obj;
 }
-}, function(modId) { var map = {"./noven.js":1558085208302}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1558085208304, function(require, module, exports) {
+}, function(modId) { var map = {"./noven.js":1558491691503}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1558491691505, function(require, module, exports) {
 const Noven = require('./noven.js')
 
 function createPage(options) {
@@ -746,7 +746,7 @@ function diff(nv,ov) {
 
 
 module.exports = createPage
-}, function(modId) { var map = {"./noven.js":1558085208302}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1558085208301);
+}, function(modId) { var map = {"./noven.js":1558491691503}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1558491691502);
 })()
 //# sourceMappingURL=index.js.map

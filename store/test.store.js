@@ -5,10 +5,10 @@ module.exports = new NovenX({
 		novenxHello: '0'
 	},
 	actions: {
-		changeTest(newValue) {
+		changeTestAction(newValue) {
 			return new Promise(resolve => {
 				setTimeout(()=>{
-					this.commit('changeTest',newValue);
+					this.commit('changeTestMutation',newValue);
 					resolve();
 				},2000)
 			})

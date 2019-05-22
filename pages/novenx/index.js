@@ -14,10 +14,16 @@ createPage({
   methods: {
     changeTest() {
       this.test = Math.random();
-      testStore.dispatch('changeTestAction',Math.random());
     },
     changeNovenXTest() {
       testStore.commit('changeTestMutation',Math.random());
+    },
+    changeNovenXTestAsync() {
+      testStore
+      .dispatch('changeTestAction',Math.random())
+      .then(() => {
+        console.log('in')
+      })
     }
   },
   watch: {

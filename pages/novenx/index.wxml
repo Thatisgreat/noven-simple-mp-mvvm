@@ -5,5 +5,6 @@
   <button style="margin-bottom: 100rpx" bindtap="changeTest">修改本页数据</button>
 
   novenX数据：<text style="color: red"> {{novenX}} </text>    
-  <button bindtap="changeNovenXTest">修改novenX中的数据</button>
+  <button bindtap="changeNovenXTestAsync">异步修改novenX中的数据</button>
+  <button bindtap="changeNovenXTest">同步修改novenX中的数据</button>
 </view>
