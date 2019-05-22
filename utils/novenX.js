@@ -116,7 +116,7 @@ module.exports = class Store {
 			return;
 		}
 
-		action(params);
+		return action(params);
 	}
 
 	//触发mutations

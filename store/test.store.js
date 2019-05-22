@@ -15,7 +15,7 @@ module.exports = new NovenX({
 		}
 	},
 	mutations: {
-		changeTest(newValue) {
+		changeTestMutation(newValue) {
 			this.novenxHello = newValue.toFixed(5);
 		}
 	},
