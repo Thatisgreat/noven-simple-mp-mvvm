@@ -2,8 +2,6 @@ const Noven = require('./noven.js')
 
 module.exports = class Store {
   constructor(options) {
-  	//挂载到Noven身上
-  	if(!Noven) return;
   	this.$options = options;
   	//保存所有action
   	this._actionsSubscribers = {};
@@ -12,16 +10,6 @@ module.exports = class Store {
   	//不允许直接修改vuex中的值
   	this.$committing = false;
 
-
-  	let _this = this;
-  	let init = Noven.prototype.init;
-  	Noven.prototype.init = function (nvmOptions) {
-  		if(Object.keys(nvmOptions).includes('store')) {
-  			this.$store = _this;
-  		}
-
-  		init.call(this);
-  	}
 
   	//执行store的初始化工作
   	this.initState();

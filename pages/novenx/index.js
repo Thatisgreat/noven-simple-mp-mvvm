@@ -1,6 +1,8 @@
 //page页面，替换Page
 const { createPage } = require('noven-mp-mvvm')
+// const createPage = require('../../utils/createPage.js')
 const testStore = require('../../store/test.store.js')
+const helloStore = require('../../store/hello.store.js')
 
 createPage({
   data: {
@@ -9,7 +11,10 @@ createPage({
   computed: {
     novenX() {
       return testStore.novenxHello
-    }
+    },
+    novenX2() {
+      return helloStore.test
+    },
   },
   methods: {
     changeTest() {
@@ -24,6 +29,9 @@ createPage({
       .then(() => {
         console.log('in')
       })
+    },
+    changeNovenX2Test() {
+      helloStore.commit('test',['zhangsan','li4','wang5','ma6'][Math.ceil(Math.random() * 3)]);
     }
   },
   watch: {
@@ -33,11 +41,15 @@ createPage({
   },
 
   onLoad(query) {
-    console.log('in')
+    console.log(query)
   },
 
   onReady() {
     // console.log(this)
+  },
+
+  onUnload() {
+    console.log(this)
   },
 
   config: {

@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {} }; __MODS__[
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = { exports: {} }; __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); if(typeof m.exports === "object") { Object.keys(m.exports).forEach(function(k) { __MODS__[modId].m.exports[k] = m.exports[k]; }); if(m.exports.__esModule) Object.defineProperty(__MODS__[modId].m.exports, "__esModule", { value: true }); } else { __MODS__[modId].m.exports = m.exports; } } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1558491691502, function(require, module, exports) {
+__DEFINE__(1559012259377, function(require, module, exports) {
 const Noven = require('./src/noven.js')
 const NovenX = require('./src/novenX.js')
 const createPage = require('./src/createPage.js')
@@ -15,8 +15,8 @@ module.exports = {
 	createPage
 }
 
-}, function(modId) {var map = {"./src/noven.js":1558491691503,"./src/novenX.js":1558491691504,"./src/createPage.js":1558491691505}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1558491691503, function(require, module, exports) {
+}, function(modId) {var map = {"./src/noven.js":1559012259378,"./src/novenX.js":1559012259379,"./src/createPage.js":1559012259380}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1559012259378, function(require, module, exports) {
 let uid = 1;
 let targetStack = []; //保存所有的target
 let arrayHandler = handleArray();
@@ -189,7 +189,7 @@ Noven.prototype.initWatch = function() {
 	if(!this.$options.watch) return;
 	Object.entries(this.$options.watch).forEach(([key,value]) =>{
 		//每一个watch都是一个watcher
-		new Watcher(this,key,value);
+		this._computedWatchers[key] = new Watcher(this,key,value);
 	})
 }
 
@@ -207,12 +207,19 @@ Noven.prototype.initMethods = function() {
 //自定义对一个对象进行监听
 Noven.prototype.$watch = function(keyOrObjFunc,cb,option) {
 	if(typeof keyOrObjFunc === 'string' || typeof keyOrObjFunc === 'function') {
-		new Watcher(this,keyOrObjFunc,cb,option);
+		this._computedWatchers['_$watcher' + ++uid] = new Watcher(this,keyOrObjFunc,cb,option);
 	}
 }
 
-
-
+//销毁当前vm实例
+//销毁this._computedWatchers中每一个watcher
+//移除每一个watcher对应的deps
+//移除vm本身
+Noven.prototype.$destroy = function() {
+	Object.entries(this._computedWatchers).forEach(([key,watcher])=> {
+		watcher.teardown()
+	})
+}
 
 
 
@@ -391,7 +398,10 @@ Watcher.prototype.run = function() {
   }
 }
 
-
+//销毁watcher的每一个dep
+Watcher.prototype.teardown = function() {
+	this.deps.forEach(dep => dep.removeSub(this));
+}
 
 
 //一个占位的函数，主要是用来做兼容的
@@ -485,13 +495,11 @@ module.exports = Noven;
 
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1558491691504, function(require, module, exports) {
+__DEFINE__(1559012259379, function(require, module, exports) {
 const Noven = require('./noven.js')
 
 module.exports = class Store {
   constructor(options) {
-  	//挂载到Noven身上
-  	if(!Noven) return;
   	this.$options = options;
   	//保存所有action
   	this._actionsSubscribers = {};
@@ -500,16 +508,6 @@ module.exports = class Store {
   	//不允许直接修改vuex中的值
   	this.$committing = false;
 
-
-  	let _this = this;
-  	let init = Noven.prototype.init;
-  	Noven.prototype.init = function (nvmOptions) {
-  		if(Object.keys(nvmOptions).includes('store')) {
-  			this.$store = _this;
-  		}
-
-  		init.call(this);
-  	}
 
   	//执行store的初始化工作
   	this.initState();
@@ -640,8 +638,8 @@ function getLastData(nvm,options) {
   keys.forEach(key => obj[key] = nvm[key])  
   return obj;
 }
-}, function(modId) { var map = {"./noven.js":1558491691503}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1558491691505, function(require, module, exports) {
+}, function(modId) { var map = {"./noven.js":1559012259378}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1559012259380, function(require, module, exports) {
 const Noven = require('./noven.js')
 
 function createPage(options) {
@@ -655,11 +653,16 @@ function createPage(options) {
     //初始化vue
     initNvm(this,options);
     //执行生命周期的onLoad
-    if(options.onLoad) options.onLoad.call(this,query);
+    if(options.onLoad) options.onLoad.call(this._nvm,query);
   }
 
   params.onReady = function() {
-    if(options.onReady) options.onReady.call(this);
+    if(options.onReady) options.onReady.call(this._nvm);
+  }
+
+  params.onUnload = function() {
+    this._nvm.$destroy();
+    if(options.onUnload) options.onUnload.call(this._nvm);
   }
 
   Page(params)
@@ -670,6 +673,7 @@ function createPage(options) {
 function initNvm(wxPage,options) {
   let nvm = new Noven(options)
   nvm.$wxPage = wxPage;
+  wxPage._nvm = nvm;
   nvm.$options = options
 
   //初始化首屏数据
@@ -746,7 +750,7 @@ function diff(nv,ov) {
 
 
 module.exports = createPage
-}, function(modId) { var map = {"./noven.js":1558491691503}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1558491691502);
+}, function(modId) { var map = {"./noven.js":1559012259378}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1559012259377);
 })()
 //# sourceMappingURL=index.js.map

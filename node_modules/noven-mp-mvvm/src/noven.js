@@ -170,7 +170,7 @@ Noven.prototype.initWatch = function() {
 	if(!this.$options.watch) return;
 	Object.entries(this.$options.watch).forEach(([key,value]) =>{
 		//每一个watch都是一个watcher
-		new Watcher(this,key,value);
+		this._computedWatchers[key] = new Watcher(this,key,value);
 	})
 }
 
@@ -188,12 +188,19 @@ Noven.prototype.initMethods = function() {
 //自定义对一个对象进行监听
 Noven.prototype.$watch = function(keyOrObjFunc,cb,option) {
 	if(typeof keyOrObjFunc === 'string' || typeof keyOrObjFunc === 'function') {
-		new Watcher(this,keyOrObjFunc,cb,option);
+		this._computedWatchers['_$watcher' + ++uid] = new Watcher(this,keyOrObjFunc,cb,option);
 	}
 }
 
-
-
+//销毁当前vm实例
+//销毁this._computedWatchers中每一个watcher
+//移除每一个watcher对应的deps
+//移除vm本身
+Noven.prototype.$destroy = function() {
+	Object.entries(this._computedWatchers).forEach(([key,watcher])=> {
+		watcher.teardown()
+	})
+}
 
 
 
@@ -372,7 +379,10 @@ Watcher.prototype.run = function() {
   }
 }
 
-
+//销毁watcher的每一个dep
+Watcher.prototype.teardown = function() {
+	this.deps.forEach(dep => dep.removeSub(this));
+}
 
 
 //一个占位的函数，主要是用来做兼容的

@@ -1,7 +1,8 @@
 //page页面，替换Page
 const { createPage } = require('noven-mp-mvvm')
+// const createPage = require('../../utils/createPage.js')
 const testStore = require('../../store/test.store.js')
-
+const helloStore = require('../../store/hello.store.js')
 
 createPage({
   data: {
@@ -16,6 +17,9 @@ createPage({
     },
     novenX() {
       return testStore.novenxHello
+    },
+    novenx2() {
+      return helloStore.test
     }
   },
   methods: {
@@ -29,8 +33,11 @@ createPage({
     },
     goTo() {
       wx.navigateTo({
-        url:'/pages/novenx/index'
+        url:'/pages/novenx/index?id=1'
       })
+    },
+    getUserInfo(e) {
+      console.log(e.detail)
     }
   },
   watch: {

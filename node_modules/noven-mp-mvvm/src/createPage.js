@@ -11,11 +11,16 @@ function createPage(options) {
     //初始化vue
     initNvm(this,options);
     //执行生命周期的onLoad
-    if(options.onLoad) options.onLoad.call(this,query);
+    if(options.onLoad) options.onLoad.call(this._nvm,query);
   }
 
   params.onReady = function() {
-    if(options.onReady) options.onReady.call(this);
+    if(options.onReady) options.onReady.call(this._nvm);
+  }
+
+  params.onUnload = function() {
+    this._nvm.$destroy();
+    if(options.onUnload) options.onUnload.call(this._nvm);
   }
 
   Page(params)
@@ -26,6 +31,7 @@ function createPage(options) {
 function initNvm(wxPage,options) {
   let nvm = new Noven(options)
   nvm.$wxPage = wxPage;
+  wxPage._nvm = nvm;
   nvm.$options = options
 
   //初始化首屏数据

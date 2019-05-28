@@ -1,4 +1,5 @@
 const { NovenX } = require('noven-mp-mvvm')
+// const NovenX = require('../utils/novenX.js')
 
 module.exports = new NovenX({
 	state: {
