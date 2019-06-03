@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/a290079770/noven-simple-mp-mvvm#readme",
   "dependencies": {
-    "noven-mp-mvvm": "^1.3.0"
+    "noven-mp-mvvm": "^1.3.1"
   }
 }

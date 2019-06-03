@@ -42,7 +42,9 @@ function initNvm(wxPage,options) {
   nvm.$watch(()=>{
     return getLastData(nvm,options)
   },(nv,ov)=> {
-    wxPage.setData(nv)
+    wxPage.setData(diff(nv,ov),function() {
+      nextTick(nv,ov,nvm,options,wxPage)
+    })
   })
 }
 
@@ -89,21 +91,154 @@ function initConfig(options) {
   }
 }
 
+function nextTick(nv,ov,nvm,options,wxPage) {
+  //这里打印出界面的数据变化
+  let computed = {};
+  if(computed) {
+    Object.entries(options.computed).forEach(([key,func])=> {
+      computed[key] = func.call(nvm);
+    })
+  }
+  console.groupCollapsed(`--- ${wxPage.route}界面数据变化 ---`);
+　　　　console.log("---diff---:",diff(nv,ov));
+　　　　console.log("---data---",nvm.$data);
+　　　　console.log("---computed---",computed);
+　　 console.groupEnd();
+}
+
 function getLastData(nvm,options) {
   let keys = [];
   let obj = {};
 
   let { data, computed } = options
+
   if(data) keys.push(...Object.keys(data))
   if(computed) keys.push(...Object.keys(computed))
 
-  keys.forEach(key => obj[key] = nvm[key])  
+  keys.forEach(key => obj[key] = cloneDeep(nvm[key]))  
   return obj;
 }
 
-function diff(nv,ov) {
-  console.log(nv,ov);
-  //先移除每个节点的__dep
+//微信里新旧data都是对象
+function diff(newData,oldData) {
+    if(!newData) return {};
+
+    let _diff = [];
+
+    function diffData(path,nv,ov) {
+        //表示没有修改
+        if(nv === ov) return false;
+
+        //如果新值存在，旧值不存在，则返回新值
+        if(!nv || !ov) return _diff.push([path,nv])
+
+        //如果新值和旧值数据类型不一样
+        if(!isSameDataType(nv,ov)) return _diff.push([path,nv])
+
+        //数据类型一致
+        //简单类型       
+        if(isSimpleDataType(nv) && isSimpleDataType(ov) && nv !== ov) return _diff.push([path,nv]);
+        
+        let obj = false; 
+        //如果都是数组，判断长度是否一致，如果长度不一致，返回新值
+        //如果长度一致，diff判断每一项
+        
+        if(Array.isArray(nv)) {
+            if(nv.length !== ov.length) return _diff.push([path,nv]);
+
+            //长度相同，需要判断内部的每一项
+            nv.forEach((item,index) => {
+               let fullPath = path ? `${path}[${index}]` : `${index}`;
+               diffData(`${path}[${index}]`,item,ov[index]);
+            })
+        }
+        
+        
+        //如果都是对象，递归判断每一项
+        if(isObject(nv)) {
+           for(let k in nv) {
+              //首先比较新对象与旧对象的所有key，如果新对象有，旧对象没有的则返回这个key                    
+              if(!nv.hasOwnProperty(k)) {
+                obj = obj || [];
+                obj.push([`${obj}.${k}`,nv[k]])
+                continue;
+              }
+
+              //都有相同key，进行diff比较
+              let fullPath = path ? `${path}.${k}` : k;
+              diffData(fullPath,nv[k],ov[k]);
+           }
+        } 
+    }
+
+    diffData('',newData,oldData);
+
+    let obj = {};
+    _diff.forEach(([path,value]) => {
+      obj[path] = value
+    })
+
+    return obj
+}
+
+
+
+//是否是相同的数据类型
+function isSameDataType(a,b) {
+    return Object.prototype.toString.call(a) === Object.prototype.toString.call(b) 
+}
+//是否是简单数据类型
+function isSimpleDataType(data) {
+    return ['string','boolean','undefined','number'].includes(typeof data); 
+}
+
+function isObject(obj) {
+    return Object.prototype.toString.call(obj).includes('Object');
+}
+
+function isObjectOrArray(obj) {
+    return Object.prototype.toString.call(obj).includes('Object') || Array.isArray(obj);
+}
+
+
+function cloneDeep(obj) {
+  if (!isObjectOrArray(obj)) return obj
+
+  let result
+
+  if (Array.isArray(obj)) {
+    result = []
+
+    obj.forEach(item => {
+      result.push(cloneDeep(item))
+    })
+    return result
+  }
+
+  return ext({}, obj)
+}
+
+
+function ext(target, source) {
+  if (isObjectOrArray(source) && isObjectOrArray(target)) {
+    for (let key in source) {
+      let item = source[key]
+
+      if (isObjectOrArray(item)) {
+        if (isObject(item) && !isObject(target[key])) {
+          target[key] = {}
+        } else if (Array.isArray(item) && !Array.isArray(target[key])) {
+          target[key] = []
+        }
+
+        ext(target[key], item)
+      } else {
+        target[key] = item
+      }
+    }
+  }
+
+  return target
 }
 
 
