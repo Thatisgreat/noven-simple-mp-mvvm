@@ -1,6 +1,6 @@
 //page页面，替换Page
-const { createPage } = require('noven-mp-mvvm')
-// const createPage = require('../../utils/createPage.js')
+// const { createPage } = require('noven-mp-mvvm')
+const createPage = require('../../utils/createPage.js')
 const testStore = require('../../store/test.store.js')
 const helloStore = require('../../store/hello.store.js')
 

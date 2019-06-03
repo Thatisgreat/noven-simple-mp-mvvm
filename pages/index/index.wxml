@@ -7,7 +7,7 @@
       <text class="userinfo-nickname">{{userInfo.nickName}}</text>
     </block>
     <view class="section">
-      这是一个input:<input value="{{motto}}" placeholder="这是一个可以自动聚焦的input" bindinput="set_motto"/>
+      这是一个input:<input style="outline: 1px solid red" value="{{motto}}" placeholder="这是一个可以自动聚焦的input" bindinput="set_motto"/>
     </view>
     <view class="section" style="margin-top: 50rpx;">
       这是novenx中store1的数据：
@@ -18,6 +18,12 @@
       <text style="color: red"> {{novenx2}} </text>    
     </view>
   </view>
+  <view>
+    名字：{{userInfo.name}}
+  </view>
+  <view>
+    年龄：{{userInfo.age}}
+  </view>
   <view class="usermotto">
     <view class="user-motto">{{motto}}</view>
     <view class="user-motto">{{sayMotto}}</view>
@@ -26,7 +32,7 @@
     修改data
   </button>
 
-   <button bindtap="goTo">
+   <button bindtap="goTo" class="btn">
     跳转
    </button>
 </view>

@@ -1,5 +1,5 @@
-const { NovenX } = require('noven-mp-mvvm')
-// const NovenX = require('../utils/novenX.js')
+// const { NovenX } = require('noven-mp-mvvm')
+const NovenX = require('../utils/novenX.js')
 
 module.exports = new NovenX({
 	state: {
@@ -11,7 +11,7 @@ module.exports = new NovenX({
 				setTimeout(()=>{
 					this.commit('changeTestMutation',newValue);
 					resolve();
-				},2000)
+				},500)
 			})
 		}
 	},

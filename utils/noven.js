@@ -373,6 +373,7 @@ Watcher.prototype.run = function() {
   if (value !== this.value || isObject(value) || Array.isArray(value) || this.deep) {
     const oldValue = this.value;
     this.value = value;
+
     //执行更新后的回调，一般用于watch的调用
     this.cb.call(this.nvm, value, oldValue);
     //后面就是调用diff算法，更新界面了
